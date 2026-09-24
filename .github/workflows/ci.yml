@@ -1,0 +1,43 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint-typecheck-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+      - name: flake8
+        run: flake8 app tests
+      - name: mypy
+        run: mypy
+      - name: pytest
+        run: pytest -q
+
+  cdk-synth:
+    # Mirrors the real pipeline's "cdk synth" validation stage: exercises the
+    # infrastructure-as-code without needing real AWS credentials or an
+    # account to deploy into.
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/cdk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+      - name: cdk synth
+        run: npx cdk synth
