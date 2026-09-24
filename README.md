@@ -1,5 +1,7 @@
 # Metadata ETL Pipeline Training
 
+> **Note:** This is a from-scratch recreation of an architectural pattern I built at my employer, not the original production code -- rebuilt with a fabricated/generic domain and no proprietary business logic, credentials, or internal resource identifiers.
+
 A training-only reconstruction of a two-phase, fan-out serverless ETL
 pipeline: **ingest** raw batched data into a store, then **transform** it
 into a normalized output shape, entirely via S3-coordinated, independently
